@@ -10,3 +10,5 @@ rule_1 = BlockRuleTypeI(destination_ports=[80])
 rule_2 = BlockRuleTypeII(destination_ports=[80])
 
 # Regla de tipo 3
+
+FIREWALL_DPID = 1

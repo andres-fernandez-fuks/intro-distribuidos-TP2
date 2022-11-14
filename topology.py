@@ -1,7 +1,7 @@
 from mininet.topo import Topo
 
 class CustomTopology(Topo):
-    HOSTS_AMOUNT = 2
+    HOSTS_AMOUNT = 4
 
 
     def __init__(self, switch_amount):
@@ -26,9 +26,11 @@ class CustomTopology(Topo):
 
 
     def add_links_between_hosts_and_switches(self, hosts, switches):
-        for host in hosts:
-            for switch in switches:
-                self.addLink(host, switch)
+        self.addLink(switches[0], hosts[0])
+        self.addLink(switches[0], hosts[1])
+
+        self.addLink(switches[-1], hosts[2])
+        self.addLink(switches[-1], hosts[3])
 
 
     def add_links_between_switches(self, switches):
