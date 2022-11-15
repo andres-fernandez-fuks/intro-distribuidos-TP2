@@ -1,19 +1,27 @@
+import pox.lib.packet as pkt
+from pox.lib.addresses import EthAddr
+
+
 class BlockRule:
     pass
 
 
 class BlockRuleTypeI(BlockRule):
     # Bloquea un paquete de acuerdo a su puerto de destino 
-    def __init__(self, destination_ports):
-        self.blocked_ports = set(destination_ports)
+    def __init__(self, destination_port):
+        self.blocked_port = destination_port
 
-    def match(self, packet):
-        return packet.dst_port in self.blocked_ports
+    def create_rules(self):
+        # A single BlockRule can translate into multiple pox rules
+        rule_1 = {'tp_dst': self.blocked_port, 'nw_proto': pkt.ipv4.TCP_PROTOCOL, 'dl_type': pkt.ethernet.IP_TYPE}
+        rule_2 = {'tp_dst': self.blocked_port, 'nw_proto': pkt.ipv4.UDP_PROTOCOL, 'dl_type': pkt.ethernet.IP_TYPE}
+        return [rule_1, rule_2]
+         
 
 
 class BlockRuleTypeII(BlockRule):
     # Bloquea un paquete de acuerdo a:
-    # - su dirección de origen
+    # - su direccion de origen
     # - su puerto de destino
     # - su protocolo de transporte
     def __init__(self, origin_address, destination_port, transport_protocol):
@@ -21,21 +29,29 @@ class BlockRuleTypeII(BlockRule):
         self.destination_port = destination_port
         self.transport_protocol = transport_protocol
 
-    def match(self, packet):
-        return packet.src_addr == self.origin_address and \
-                packet.dst_port == self.destination_port and \
-                packet.transport_protocol == self.transport_protocol
+    def create_rules(self):
+        rule_1 = {
+            'nw_src': self.origin_address,
+            'dl_type': pkt.ethernet.IP_TYPE,
+            'tp_dst': self.destination_port,
+            'nw_proto': self.transport_protocol
+        }
+        return [rule_1]
 
 
 class BlockRuleTypeIII(BlockRule):
     # Bloquea un paquete de acuerdo a:
-    # - su dirección de origen
-    # - su dirección de destino
+    # - su direccion de origen
+    # - su direccion de destino
 
     def __init__(self, origin_address, destination_address):
         self.origin_address = origin_address
         self.destination_address = destination_address
 
-    def match(self, packet):
-        return packet.src_addr == self.origin_address and \
-                packet.dst_addr == self.destination_address
+    def create_rules(self):
+        rule_1 = {
+            'nw_src': self.origin_address,
+            'nw_dst': self.destination_address,
+            'dl_type': pkt.ethernet.IP_TYPE,
+        }
+        return [rule_1]

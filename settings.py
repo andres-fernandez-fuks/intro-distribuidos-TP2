@@ -1,14 +1,12 @@
-# Regla de tipo 1
+import pox.lib.packet as pkt
 
-from block_rule import *
+# Esta variable indica que switchs aplicaran el firewall
+FIREWALL_SWITCH_ID = 1
 
-
-rule_1 = BlockRuleTypeI(destination_ports=[80])
-
-# Regla de tipo 2
-
-rule_2 = BlockRuleTypeII(destination_ports=[80])
-
-# Regla de tipo 3
-
-FIREWALL_DPID = 1
+# Variables referidas a reglas solicitadas
+R1_BLOCKED_DST_PORT = 80
+R2_BLOCKED_SRC_ADDR = 1
+R2_BLOCKED_DST_PORT = 5001
+R2_BLOCKED_PROTOCOL = pkt.ipv4.UDP_PROTOCOL
+R3_BLOCKED_SRC_ADDR = 1
+R3_BLOCKED_DST_ADDR = 2
