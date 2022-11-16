@@ -3,6 +3,7 @@ import pox.lib.packet as pkt
 import pox.openflow.libopenflow_01 as of
 from pox.core import core
 from pox.lib.revent import EventMixin
+from pox.lib.util import dpid_to_str
 
 
 #internal files
@@ -28,6 +29,8 @@ class Firewall(EventMixin):
     def _handle_ConnectionUp(self, event):
         if (event.connection.dpid != settings.FIREWALL_SWITCH_ID):
             return
+        event_mac_address = dpid_to_str(event.connection.dpid)
+        log.info("El switch con direccion %s aplicara las reglas", event_mac_address)
         rules = self.create_rules()
         for rule in rules:
             log.info(" Aplicando regla: {}".format(rule))
