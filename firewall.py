@@ -19,16 +19,10 @@ class Firewall(EventMixin):
         log.debug("Habilitando Firewall")
 
     def create_rules(self):
-        type_I_rules = br.BlockRuleTypeI(settings.R1_BLOCKED_DST_PORT).create_rules()
-        type_II_rules = br.BlockRuleTypeII(
-            settings.R2_BLOCKED_SRC_ADDR,
-            settings.R2_BLOCKED_DST_PORT,
-            settings.R2_BLOCKED_PROTOCOL,
-        ).create_rules()
-        type_III_rules = br.BlockRuleTypeIII(
-            settings.R3_BLOCKED_1_ADDR, settings.R3_BLOCKED_2_ADDR
-        ).create_rules()
-        return type_I_rules + type_II_rules + type_III_rules
+        rules = []
+        for block_rule in settings.ACTIVE_RULES:
+            rules += block_rule.create_rules()
+        return rules
 
     def _handle_ConnectionUp(self, event):
         if event.connection.dpid != settings.FIREWALL_SWITCH_ID:

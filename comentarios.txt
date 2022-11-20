@@ -1,0 +1,5 @@
+- No tiene sentido permitir bloquear por puerto de origen, es imposible de testear (no se puede definir)
+- La regla 1 funciona
+- La regla 2 funciona
+- La regla 3 funciona
+- Una variación de la regla 3 funciona bien si se define el puerto de destino a bloquear.
