@@ -1,4 +1,4 @@
-- No tiene sentido permitir bloquear por puerto de origen, es imposible de testear (no se puede definir)
+- ipf3 sí permite especificar el puerto del cliente
 - La regla 1 funciona
 - La regla 2 funciona
 - La regla 3 funciona

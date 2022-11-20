@@ -106,10 +106,14 @@ class GenericBlockRule(BlockRule):
         return rules_for_src + rules_for_dst
 
     def _create_rules_between_specific_hosts(self, is_source):
-        if self.port_specified_but_not_protocol():
-            return self.create_rules_between_specific_hosts_with_port_for_host(is_source)
+        if self.port_specified_but_not_protocol(is_source):
+            return self.create_rules_between_specific_hosts_with_port_for_host(
+                is_source
+            )
         if self.blocked_protocol:
-            return self.create_rules_between_specific_hosts_with_port_and_protocol_for_host(is_source)
+            return self.create_rules_between_specific_hosts_with_port_and_protocol_for_host(
+                is_source
+            )
         return self.create_rules_between_specific_hosts_with_only_host(is_source)
 
     def get_parameters_for_specific_hosts(self, is_source):
@@ -123,16 +127,24 @@ class GenericBlockRule(BlockRule):
             dl_dst = self.get_blocked_src_host_address()
             tp_src = self.blocked_dst_port
             tp_dst = self.blocked_src_port
-        return dl_src, dl_dst, tp_src, tp_dst # No tiene sentido bloquear en base al tp_src, no se puede definir
+        return (
+            dl_src,
+            dl_dst,
+            tp_src,
+            tp_dst,
+        )  # No tiene sentido bloquear en base al tp_src, no se puede definir
 
     def create_rules_between_specific_hosts_with_port_for_host(self, is_source=True):
         # Se especifica un puerto, pero no un protocolo. Como el protocolo no puede ser None, hay que hacer dos reglas.
         # Se llama for_host para que quede mas claro que es para un solo host
-        dl_src, dl_dst, tp_src, tp_dst = self.get_parameters_for_specific_hosts(is_source)
+        dl_src, dl_dst, tp_src, tp_dst = self.get_parameters_for_specific_hosts(
+            is_source
+        )
         rule_1 = {
             "dl_src": dl_src,
             "dl_dst": dl_dst,
             "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": tp_src,
             "tp_dst": tp_dst,
             "nw_proto": pkt.ipv4.UDP_PROTOCOL,
         }
@@ -140,6 +152,7 @@ class GenericBlockRule(BlockRule):
             "dl_src": dl_src,
             "dl_dst": dl_dst,
             "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": tp_src,
             "tp_dst": tp_dst,
             "nw_proto": pkt.ipv4.TCP_PROTOCOL,
         }
@@ -158,43 +171,57 @@ class GenericBlockRule(BlockRule):
         }
         return [rule_1]
 
-    def create_rules_between_specific_hosts_with_port_and_protocol_for_host(self, is_source=True):
+    def create_rules_between_specific_hosts_with_port_and_protocol_for_host(
+        self, is_source=True
+    ):
         # Se especifican host, puerto y protocolo (todo lo posible)
         # Se llama for_host para que quede mas claro que es para un solo host
-        dl_src, dl_dst, tp_src, tp_dst = self.get_parameters_for_specific_hosts(is_source)
+        dl_src, dl_dst, tp_src, tp_dst = self.get_parameters_for_specific_hosts(
+            is_source
+        )
         rule_1 = {
             "dl_src": dl_src,
             "dl_dst": dl_dst,
             "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": tp_src,
             "tp_dst": tp_dst,
             "nw_proto": self.blocked_protocol,
         }
         return [rule_1]
 
-    def port_specified_but_not_protocol(self):
+    def any_port_specified_but_not_protocol(self):
+        return self.port_specified_but_not_protocol(
+            is_source=True
+        ) or self.port_specified_but_not_protocol(is_source=False)
+
+    def port_specified_but_not_protocol(self, is_source):
+        if is_source:
+            return self.blocked_src_port and not self.blocked_protocol
         return self.blocked_dst_port and not self.blocked_protocol
 
     def create_rules_between_any_hosts(self):
         # Si entro aca, por lo menos uno de los dos hosts no esta definido
-        if self.port_specified_but_not_protocol():
+        if self.any_port_specified_but_not_protocol():
             return self.create_rules_between_any_hosts_with_port()
         if self.blocked_protocol:
             return self.create_rules_between_any_hosts_with_protocol()
         return self.create_rules_between_any_hosts_with_no_port_and_no_protocol()
 
     def create_rules_between_any_hosts_with_port(self):
-        # Protocolo no definido
+        # Protocolo no definido, aunque no este en el nombre del metodo
         rule_1 = {
-            "dl_src": self.blocked_src_host,
-            "dl_dst": self.blocked_dst_host,
+            "dl_src": self.get_blocked_src_host_address(),
+            "dl_dst": self.get_blocked_dst_host_address(),
             "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": self.blocked_src_port,
             "tp_dst": self.blocked_dst_port,
             "nw_proto": pkt.ipv4.UDP_PROTOCOL,
         }
         rule_2 = {
-            "dl_src": None,
-            "dl_dst": None,
+            "dl_src": self.get_blocked_src_host_address(),
+            "dl_dst": self.get_blocked_dst_host_address(),
             "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": self.blocked_src_port,
             "tp_dst": self.blocked_dst_port,
             "nw_proto": pkt.ipv4.TCP_PROTOCOL,
         }
@@ -206,6 +233,7 @@ class GenericBlockRule(BlockRule):
             "dl_src": self.get_blocked_src_host_address(),
             "dl_dst": self.get_blocked_dst_host_address(),
             "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": self.blocked_src_port,
             "tp_dst": self.blocked_dst_port,
             "nw_proto": self.blocked_protocol,
         }
@@ -221,4 +249,3 @@ class GenericBlockRule(BlockRule):
             "nw_proto": None,
         }
         return [rule_1]
-        
