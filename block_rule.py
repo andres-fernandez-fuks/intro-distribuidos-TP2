@@ -98,14 +98,17 @@ class GenericBlockRule(BlockRule):
         return self.create_rules_between_any_hosts()
 
     def is_rule_between_specific_hosts(self):
+        # Si se especifican los dos hosts (como en la regla 3), la regla es un poco distinta
         return self.blocked_src_host and self.blocked_dst_host
 
     def create_rules_between_specific_hosts(self):
-        rules_for_src = self._create_rules_between_specific_hosts(is_source=True)
-        rules_for_dst = self._create_rules_between_specific_hosts(is_source=False)
+        # Crea las reglas cuando ambos hosts son especificados
+        rules_for_src = self.create_rules_between_specific_hosts_for_host(is_source=True)
+        rules_for_dst = self.create_rules_between_specific_hosts_for_host(is_source=False)
         return rules_for_src + rules_for_dst
 
-    def _create_rules_between_specific_hosts(self, is_source):
+    def create_rules_between_specific_hosts_for_host(self, is_source):
+        # crea las reglas para un host en particular
         if self.port_specified_but_not_protocol(is_source):
             return self.create_rules_between_specific_hosts_with_port_for_host(
                 is_source
@@ -190,11 +193,13 @@ class GenericBlockRule(BlockRule):
         return [rule_1]
 
     def any_port_specified_but_not_protocol(self):
+        # Si se especifica alguno de los dos puertos, pero no el protocolo
         return self.port_specified_but_not_protocol(
             is_source=True
         ) or self.port_specified_but_not_protocol(is_source=False)
 
     def port_specified_but_not_protocol(self, is_source):
+        # Si se especifica uno de los puertos, pero no el protocolo
         if is_source:
             return self.blocked_src_port and not self.blocked_protocol
         return self.blocked_dst_port and not self.blocked_protocol
