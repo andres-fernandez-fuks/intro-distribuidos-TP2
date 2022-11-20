@@ -14,24 +14,49 @@ R3_BLOCKED_2_ADDR = 4
 
 rule_1_restrictions = {
     "dst_port": R1_BLOCKED_DST_PORT,
-    "src_port": 81,
 }
 
 rule_2_restrictions = {
     "src_host": R2_BLOCKED_SRC_ADDR,
     "dst_port": R2_BLOCKED_DST_PORT,
-    "src_port": 8000,
     "protocol": R2_BLOCKED_PROTOCOL,
 }
 
 rule_3_restrictions = {
     "src_host": R3_BLOCKED_1_ADDR,
     "dst_host": R3_BLOCKED_2_ADDR,
-    "protocol": pkt.ipv4.UDP_PROTOCOL,
 }
 
+extra_rule_1 = {
+    "dst_port": R1_BLOCKED_DST_PORT,
+    "src_port": 81,
+} # funciona
+
+extra_rule_2 = {
+    "src_host": 1,
+    "dst_port": 80,
+    "src_port": 81,
+    "protocol": pkt.ipv4.TCP_PROTOCOL,
+} # funciona
+
+extra_rule_3 = {
+    "src_host": R2_BLOCKED_SRC_ADDR,
+    "dst_port": R2_BLOCKED_DST_PORT,
+    "src_port": 8000,
+    "protocol": R2_BLOCKED_PROTOCOL,
+}
+
+extra_rule_4 = {
+    "src_host": R3_BLOCKED_1_ADDR,
+    "dst_host": R3_BLOCKED_2_ADDR,
+    "dst_port": 8001,
+    "protocol": pkt.ipv4.ICMP_PROTOCOL,
+}
+
+
 ACTIVE_RULES = [
-    br.GenericBlockRule(rule_1_restrictions),
+    br.GenericBlockRule(extra_rule_4),
+    # br.GenericBlockRule(rule_1_restrictions),
     # br.GenericBlockRule(rule_2_restrictions),
     # br.GenericBlockRule(rule_3_restrictions),
 ]

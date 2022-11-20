@@ -22,6 +22,8 @@ class Firewall(EventMixin):
         rules = []
         for block_rule in settings.ACTIVE_RULES:
             rules += block_rule.create_rules()
+            if block_rule.should_raise_warning():
+                log.warning("Advertencia: {}".format(block_rule.get_warning()))
         return rules
 
     def _handle_ConnectionUp(self, event):

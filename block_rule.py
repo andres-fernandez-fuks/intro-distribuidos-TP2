@@ -77,6 +77,10 @@ class GenericBlockRule(BlockRule):
         self.blocked_src_port = restrictions.get("src_port", None)
         self.blocked_dst_host = restrictions.get("dst_host", None)
         self.blocked_dst_port = restrictions.get("dst_port", None)
+        if self.blocked_protocol == pkt.ipv4.ICMP_PROTOCOL and (
+            self.blocked_src_port or self.blocked_dst_port
+        ):
+            self.raise_exception()
 
     def get_blocked_src_host_address(self):
         return (
@@ -103,8 +107,12 @@ class GenericBlockRule(BlockRule):
 
     def create_rules_between_specific_hosts(self):
         # Crea las reglas cuando ambos hosts son especificados
-        rules_for_src = self.create_rules_between_specific_hosts_for_host(is_source=True)
-        rules_for_dst = self.create_rules_between_specific_hosts_for_host(is_source=False)
+        rules_for_src = self.create_rules_between_specific_hosts_for_host(
+            is_source=True
+        )
+        rules_for_dst = self.create_rules_between_specific_hosts_for_host(
+            is_source=False
+        )
         return rules_for_src + rules_for_dst
 
     def create_rules_between_specific_hosts_for_host(self, is_source):
@@ -161,9 +169,43 @@ class GenericBlockRule(BlockRule):
         }
         return [rule_1, rule_2]
 
+    def create_rules_between_specific_hosts_with_one_port_defined_for_host(
+        self, is_source
+    ):
+        # Solamente entra si uno de los puertos esta definido pero el otro no
+        # Hay que crear dos reglas igualmente
+        dl_src, dl_dst, tp_src, tp_dst = self.get_parameters_for_specific_hosts(
+            is_source
+        )
+        rule_1 = {
+            "dl_src": dl_src,
+            "dl_dst": dl_dst,
+            "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": tp_src,
+            "tp_dst": tp_dst,
+            "nw_proto": pkt.ipv4.UDP_PROTOCOL,
+        }
+        rule_2 = {
+            "dl_src": dl_src,
+            "dl_dst": dl_dst,
+            "dl_type": pkt.ethernet.IP_TYPE,
+            "tp_src": tp_src,
+            "tp_dst": tp_dst,
+            "nw_proto": pkt.ipv4.TCP_PROTOCOL,
+        }
+        return [rule_1, rule_2]
+
     def create_rules_between_specific_hosts_with_only_host(self, is_source=True):
         # Para un host en particular, se especifica solamente bloquear la direccion IP
-        dl_src, dl_dst, _ = self.get_parameters_for_specific_hosts(is_source)
+        dl_src, dl_dst, tp_src, tp_dst = self.get_parameters_for_specific_hosts(
+            is_source
+        )
+        if tp_src or tp_dst:
+            return (
+                self.create_rules_between_specific_hosts_with_one_port_defined_for_host(
+                    is_source
+                )
+            )
         rule_1 = {
             "dl_src": dl_src,
             "dl_dst": dl_dst,
@@ -254,3 +296,12 @@ class GenericBlockRule(BlockRule):
             "nw_proto": None,
         }
         return [rule_1]
+
+    def should_raise_warning(self):
+        return self.blocked_src_port and self.blocked_protocol == pkt.ipv4.TCP_PROTOCOL
+
+    def get_warning(self):
+        return "No hay forma de verificar el funcionamiento de la regla con ninguna version"
+
+    def raise_exception(self):
+        raise Exception("El protocolo ICMP no acepta que se especifiquen puertos")
