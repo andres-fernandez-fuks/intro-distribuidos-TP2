@@ -43,7 +43,7 @@ class Firewall(EventMixin):
         if packet.type == packet.IP_TYPE:
             ip_packet = packet.payload
             packet_payload = ip_packet.payload
-            log.info(" IP SRC{}".format(ip_packet.srcip))
+            log.info(" IP SRC: {}".format(ip_packet.srcip))
             log.info(" IP DST: {}".format(ip_packet.dstip))
             if ip_packet.protocol == ip_packet.TCP_PROTOCOL:
                 log.info(" TCP Protocol")
@@ -51,6 +51,7 @@ class Firewall(EventMixin):
                 log.info(" UDP Protocol")
             elif ip_packet.protocol == ip_packet.ICMP_PROTOCOL:
                 log.info(" ICMP Protocol")
+                log.info(" #########################")
                 return  # si es ICMP no se puede acceder a srcport y dstport
             log.info(" PORT SRC: {}".format(packet_payload.srcport))
             log.info(" PORT DST: {}".format(packet_payload.dstport))
