@@ -43,7 +43,7 @@ class Firewall(EventMixin):
         if packet.type == packet.IP_TYPE:
             ip_packet = packet.payload
             packet_payload = ip_packet.payload
-            log.info(" IP SRC{}".format(ip_packet.srcip))
+            log.info(" IP SRC: {}".format(ip_packet.srcip))
             log.info(" IP DST: {}".format(ip_packet.dstip))
             if ip_packet.protocol == ip_packet.TCP_PROTOCOL:
                 log.info(" TCP Protocol")
