@@ -1,8 +1,13 @@
 import pox.lib.packet as pkt
-import block_rule as br
+from block_rule import (
+    GenericBlockRule,
+    BlockRuleTypeI,
+    BlockRuleTypeII,
+    BlockRuleTypeIII,
+)
 
 # Esta variable indica que switchs aplicaran el firewall
-FIREWALL_SWITCH_ID = 1
+FIREWALL_SWITCH_ID = 4
 
 # Variables referidas a reglas solicitadas
 R1_BLOCKED_DST_PORT = 80
@@ -23,21 +28,21 @@ rule_2_restrictions = {
 }
 
 rule_3_restrictions = {
-    "src_host": R3_BLOCKED_1_ADDR,
+    "src_host": R3_BLOCKED_1_ADDR,  # No importa cual es src y cual es dst
     "dst_host": R3_BLOCKED_2_ADDR,
 }
 
 extra_rule_1 = {
     "dst_port": R1_BLOCKED_DST_PORT,
     "src_port": 81,
-} # funciona
+}  # funciona
 
 extra_rule_2 = {
     "src_host": 1,
     "dst_port": 80,
     "src_port": 81,
     "protocol": pkt.ipv4.TCP_PROTOCOL,
-} # funciona
+}  # funciona
 
 extra_rule_3 = {
     "src_host": R2_BLOCKED_SRC_ADDR,
@@ -55,8 +60,8 @@ extra_rule_4 = {
 
 
 ACTIVE_RULES = [
-    br.GenericBlockRule(extra_rule_4),
-    # br.GenericBlockRule(rule_1_restrictions),
-    # br.GenericBlockRule(rule_2_restrictions),
-    # br.GenericBlockRule(rule_3_restrictions),
+    # GenericBlockRule(extra_rule_4),
+    BlockRuleTypeI()
+    # BlockRuleTypeII(),
+    # BlockRuleTypeIII(),
 ]
