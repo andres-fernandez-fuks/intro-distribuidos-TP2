@@ -51,6 +51,7 @@ class Firewall(EventMixin):
                 log.info(" UDP Protocol")
             elif ip_packet.protocol == ip_packet.ICMP_PROTOCOL:
                 log.info(" ICMP Protocol")
+                log.info(" #########################")
                 return  # si es ICMP no se puede acceder a srcport y dstport
             log.info(" PORT SRC: {}".format(packet_payload.srcport))
             log.info(" PORT DST: {}".format(packet_payload.dstport))
