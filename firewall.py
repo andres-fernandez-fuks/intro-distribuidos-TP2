@@ -42,21 +42,19 @@ class Firewall(EventMixin):
         packet = event.parsed
         if packet.type == packet.IP_TYPE:
             ip_packet = packet.payload
-            log.info(" ----------------------------")
-            log.info(" Nuevo Paquete IP:")
             packet_payload = ip_packet.payload
-            log.info("  IP Origen: {}".format(ip_packet.srcip))
-            log.info("  IP Destino: {}".format(ip_packet.dstip))
+            log.info(" IP SRC{}".format(ip_packet.srcip))
+            log.info(" IP DST: {}".format(ip_packet.dstip))
             if ip_packet.protocol == ip_packet.TCP_PROTOCOL:
-                log.info("  Protocolo: TCP")
+                log.info(" TCP Protocol")
             elif ip_packet.protocol == ip_packet.UDP_PROTOCOL:
-                log.info("  Protocolo: UDP")
+                log.info(" UDP Protocol")
             elif ip_packet.protocol == ip_packet.ICMP_PROTOCOL:
-                log.info("  Protocolo: ICMP")
+                log.info(" ICMP Protocol")
                 return  # si es ICMP no se puede acceder a srcport y dstport
-            log.info("  Puerto Origen: {}".format(packet_payload.srcport))
-            log.info("  Puerto Destino: {}".format(packet_payload.dstport))
-            log.info(" ----------------------------")
+            log.info(" PORT SRC: {}".format(packet_payload.srcport))
+            log.info(" PORT DST: {}".format(packet_payload.dstport))
+            log.info(" #########################")
 
 
 def launch():
