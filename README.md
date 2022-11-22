@@ -14,6 +14,8 @@ Todo esto se puede lograr ejecutando el script provisto `run.sh <switches_amount
 
 Una vez inicializada la topologia, se puede proceder a ejecutar las pruebas para validar el funcionamiento del firewall.
 
+La activacion de cada prueba en particular y sus respectivos parametros se puede realizar modificando el archivo `settings.py`.
+
 A continuacion, se especifica como ejecutar cada una de las reglas por defecto dadas en la consigna.
 
 ### Regla 1
