@@ -30,7 +30,9 @@ class Firewall(EventMixin):
         if event.connection.dpid != settings.FIREWALL_SWITCH_ID:
             return
         event_mac_address = dpid_to_str(event.connection.dpid)
-        log.info("El switch con direccion {} aplicara las reglas".format(event_mac_address))
+        log.info(
+            "El switch con direccion {} aplicara las reglas".format(event_mac_address)
+        )
         rules = self.create_rules()
         for rule in rules:
             log.info(" Aplicando regla: {}".format(rule))

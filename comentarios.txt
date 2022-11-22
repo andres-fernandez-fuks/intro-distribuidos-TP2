@@ -1,7 +1,0 @@
-- ipf3 sí permite especificar el puerto del cliente
-- La regla 1 funciona
-- La regla 2 funciona
-- La regla 3 funciona
-- Una variación de la regla 3 funciona bien si se define el puerto de destino a bloquear.
-- Una variación de la regla 1 funciona bien si se de
-- Si se bloquea TCP, no se puede usar iperf3 xq iperf3 hace un handshake TCP antes de empezar a enviar
