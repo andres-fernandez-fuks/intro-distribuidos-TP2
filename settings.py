@@ -6,10 +6,10 @@ from block_rule import (
     BlockRuleTypeIII,
 )
 
-# Esta variable indica que switchs aplicaran el firewall
+# Esta variable indica que switch aplicara el firewall
 FIREWALL_SWITCH_ID = 4
 
-# Variables referidas a reglas solicitadas
+# Variables referidas a reglas por defecto
 R1_BLOCKED_DST_PORT = 80
 R2_BLOCKED_SRC_ADDR = 1
 R2_BLOCKED_DST_PORT = 5001
@@ -17,6 +17,7 @@ R2_BLOCKED_PROTOCOL = pkt.ipv4.UDP_PROTOCOL
 R3_BLOCKED_1_ADDR = 2
 R3_BLOCKED_2_ADDR = 4
 
+# Definiciones de las reglas por defecto, con sus campos respectivos
 rule_1_restrictions = {
     "dst_port": R1_BLOCKED_DST_PORT,
 }
@@ -32,6 +33,7 @@ rule_3_restrictions = {
     "dst_host": R3_BLOCKED_2_ADDR,
 }
 
+# Reglas extra
 extra_rule_1 = {
     "dst_port": R1_BLOCKED_DST_PORT,
     "src_port": 81,
