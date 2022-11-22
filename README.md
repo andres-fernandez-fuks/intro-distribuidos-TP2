@@ -14,7 +14,7 @@ sudo mn --custom ./topology.py --topo custom,<switches_amount> --mac --controlle
 ```
 En la cual se debe especificar la cantidad de switches que se desean utilizar.
 
-Estos pasos tambien pueden ser realizados mediante el script `run.sh` que por defecto establece 4 switches.
+Estos pasos tambien pueden ser realizados mediante el script `run.sh <switches_amount>` que establece la cantidad de switches a utilizar.
 
 ---
 
