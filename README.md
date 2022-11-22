@@ -8,6 +8,8 @@ Luego, se inicializa la topologia en la cual se debe especificar la cantidad de 
 
 Todo esto se puede lograr ejecutando el script provisto `run.sh <switches_amount>` cuyo parametro establece la cantidad de switches a utilizar y se encarga de inicializar el controlador y la topologia.
 
+En caso de actualizar el archivo `settings.py` para modificar las reglas del firewall, se puede detener el proceso de POX y ejecutarlo nuevamente con el script `pox.sh`
+
 ---
 
 ## Ejecucion
