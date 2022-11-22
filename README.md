@@ -2,19 +2,11 @@
 
 ## Inicializacion
 
-Se debe comenzar por iniciar el controlador mediante:
-```bash
-./pox.py misc.firewall forwarding.l2_learning
-```
-Esto permitira que POX aplique las reglas del firewall a los switches de la topologia.
+Se debe comenzar por iniciar el controlador para que POX aplique las reglas del firewall a los switches de la topologia.
 
-Luego, se inicializa la topologia mediante:
-```bash
-sudo mn --custom ./topology.py --topo custom,<switches_amount> --mac --controller remote
-```
-En la cual se debe especificar la cantidad de switches que se desean utilizar.
+Luego, se inicializa la topologia en la cual se debe especificar la cantidad de switches que se desean utilizar.
 
-Estos pasos tambien pueden ser realizados mediante el script `run.sh <switches_amount>` que establece la cantidad de switches a utilizar.
+Todo esto se puede lograr ejecutando el script provisto `run.sh <switches_amount>` cuyo parametro establece la cantidad de switches a utilizar y se encarga de inicializar el controlador y la topologia.
 
 ---
 
