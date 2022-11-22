@@ -38,8 +38,8 @@ extra_rule_restrictions = {
 extra_rule = GenericBlockRule(extra_rule_restrictions)
 
 ACTIVE_RULES = [
-    # BlockRuleTypeI(),
-    # BlockRuleTypeII(),
-    # BlockRuleTypeIII(),
-    extra_rule,
+    BlockRuleTypeI(),
+    BlockRuleTypeII(),
+    BlockRuleTypeIII(),
+    # extra_rule,
 ]
